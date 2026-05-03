@@ -1,21 +1,12 @@
 import yfinance as yf
 import pandas as pd
-import requests
 import time
 
 class YahooData:
     """Fetch clean OHLC data from Yahoo Finance with anti-blocking measures."""
 
     def __init__(self):
-        # Create a persistent session with real browser headers
-        self.session = requests.Session()
-        self.session.headers.update({
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-            'Accept-Language': 'en-US,en;q=0.5',
-            'Connection': 'keep-alive',
-            'Cache-Control': 'no-cache',
-        })
+        pass
 
     def get_candles(self, symbol, interval, period="5d", max_retries=3):
         """
@@ -27,8 +18,7 @@ class YahooData:
         """
         for attempt in range(1, max_retries + 1):
             try:
-                # Use the session with headers to avoid 403/empty responses
-                ticker = yf.Ticker(symbol, session=self.session)
+                ticker = yf.Ticker(symbol)
                 df = ticker.history(period=period, interval=interval)
 
                 if not df.empty:
