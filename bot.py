@@ -1,3 +1,7 @@
+import sys
+import os
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+
 import requests
 import time
 import json
@@ -33,7 +37,6 @@ class EngineXV1Bot:
         if len(df_entry) < 50:
             return None, {"error": f"Not enough data. Only {len(df_entry)} candles available."}
 
-        # Run engine analysis (now returns breakdown too)
         return self.engine.analyze_with_details(df_entry, df_bias, symbol_name)
 
     def format_signal(self, signal):
@@ -61,7 +64,6 @@ class EngineXV1Bot:
         bos = details['bos']
         ob = details['ob_touch']
 
-        # Trend emoji
         trend_emoji = "📈" if trend == "BULLISH" else ("📉" if trend == "BEARISH" else "↔️")
 
         return (
@@ -91,7 +93,7 @@ class EngineXV1Bot:
                 "I analyze markets using <b>Smart Money Concepts</b>.\n\n"
                 "Commands:\n"
                 "/work — Analyze XAUUSD or BTCUSD\n"
-                "/status — Bot status (coming soon)\n\n"
+                "/status — Bot status\n\n"
                 "<i>I only send signals when score is 7/10+. No forcing trades.</i>"
             )
             self.send_message(chat_id, welcome)
