@@ -1,14 +1,36 @@
-import sys
-import os
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-
 import requests
 import time
 import json
 from datetime import datetime
-from config import *
+
+# ============================================
+# CONFIGURATION (Built-in — no config.py needed)
+# ============================================
+
+# Telegram (hardcoded)
+TELEGRAM_TOKEN = "8664944539:AAGWo-F90tqxwoZukOH2Luvmu8Vl5ATMZqM"
+TELEGRAM_CHAT_ID = "6094186912"
+
+# Yahoo Finance symbols
+SYMBOLS = {
+    "XAUUSD": "GC=F",
+    "BTCUSD": "BTC-USD"
+}
+
+# Timeframes
+BIAS_TF = "1h"
+ENTRY_TF = "5m"
+DATA_PERIOD = "5d"
+
+# Max signals per day
+MAX_SIGNALS_PER_DAY = 3
+
+# ============================================
+# IMPORTS
+# ============================================
 from data import YahooData
 from engine import SMCEngine
+
 
 class EngineXV1Bot:
     def __init__(self):
@@ -149,7 +171,7 @@ class EngineXV1Bot:
 
     def run(self):
         print("🚀 ENGINE XV1 Started (Interactive Mode + Transparency)")
-        print(f"🤖 Bot running with token: {TELEGRAM_TOKEN[:8]}...")
+        print(f"🤖 Bot running...")
         last_update_id = 0
 
         while True:
