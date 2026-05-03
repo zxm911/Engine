@@ -1,5 +1,10 @@
 import pandas as pd
 import numpy as np
+import sys
+import os
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from config import SCORE_THRESHOLD, SCORES
+
 
 class SMCEngine:
     """Smart Money Concepts analysis engine."""
@@ -42,16 +47,13 @@ class SMCEngine:
         if len(df) < 3:
             return False, False
 
-        # Equal highs / lows detection (simplified: compare consecutive)
         eq_high = abs(df['high'].iloc[-1] - df['high'].iloc[-2]) < (df['high'].iloc[-2] * threshold)
         eq_low = abs(df['low'].iloc[-1] - df['low'].iloc[-2]) < (df['low'].iloc[-2] * threshold)
 
-        # Sweep: price spikes beyond equal level then closes back inside
         sweep_high = False
         sweep_low = False
 
         if eq_high:
-            # Check if a recent candle wicked above the equal high then closed below
             recent_highs = df['high'].iloc[-3:]
             recent_closes = df['close'].iloc[-3:]
             if any(recent_highs > df['high'].iloc[-2] + (df['high'].iloc[-2] * threshold)):
@@ -86,7 +88,6 @@ class SMCEngine:
             return None, None
 
         if trend == "bullish":
-            # Look for a bearish candle (close < open) before an upward impulse
             bear_mask = df['close'] < df['open']
             if bear_mask.any():
                 ob_candle = df[bear_mask].iloc[-1]
@@ -105,7 +106,6 @@ class SMCEngine:
             return False
 
         if trend == "bullish":
-            # Price should have wicked into the OB (low touched OB zone)
             recent_low = df['low'].iloc[-3:].min()
             return recent_low <= ob_high and recent_low >= ob_low
         elif trend == "bearish":
@@ -149,8 +149,7 @@ class SMCEngine:
         ob_high, ob_low = self.find_ob(df_entry, trend)
         ob_touch = self.check_ob_touch(df_entry, ob_high, ob_low, trend)
 
-        # 5. Scoring
-        from config import SCORE_THRESHOLD, SCORES
+        # 5. Scoring (using top-level imports)
         score = 0
 
         if trend in ["bullish", "bearish"]:
