@@ -1,9 +1,5 @@
 import pandas as pd
 import numpy as np
-import sys
-import os
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from config import SCORE_THRESHOLD, SCORES
 
 
 class SMCEngine:
@@ -149,21 +145,22 @@ class SMCEngine:
         ob_high, ob_low = self.find_ob(df_entry, trend)
         ob_touch = self.check_ob_touch(df_entry, ob_high, ob_low, trend)
 
-        # 5. Scoring (using top-level imports)
+        # 5. Scoring (hardcoded)
+        SCORE_THRESHOLD = 7
         score = 0
 
         if trend in ["bullish", "bearish"]:
-            score += SCORES["trend_aligned"]
+            score += 2  # trend_aligned
 
         if trend == "bullish" and sweep_low:
-            score += SCORES["liquidity_sweep"]
+            score += 3  # liquidity_sweep
         elif trend == "bearish" and sweep_high:
-            score += SCORES["liquidity_sweep"]
+            score += 3  # liquidity_sweep
 
         if bos:
-            score += SCORES["bos"]
+            score += 3  # bos
         if ob_touch:
-            score += SCORES["ob_touch"]
+            score += 2  # ob_touch
 
         # Build breakdown (always returned for transparency)
         breakdown = {
